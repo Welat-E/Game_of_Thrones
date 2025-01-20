@@ -25,6 +25,8 @@ def get_characters():
             print("Both must be filled with integer or should be empty.")
     with open("data/characters.json", "r") as file:
         data = json.load(file)  # loading the json file in a object
+        if limit == int(20) and skip == int(0):
+            random.shuffle(data)
         for character in data[skip : limit + skip]:  # we iterate over the list and go,
             print()  # in each selected dict. and print each key and value inside.
             for key, value in character.items():
