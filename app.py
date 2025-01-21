@@ -31,6 +31,14 @@ def get_characters():
             print()  # in each selected dict. and print each key and value inside.
             for key, value in character.items():
                 print(f"{key.title()}: {value}")
-
-
 get_characters()
+
+
+@app.route("/get_character_by_id")
+def get_character_by_id(id):
+    id = int(input("Please put Id of Character: "))
+    with open("data/characters.json", "r") as file:
+        data = json.load(file)
+        for character in data:
+            for id in character.items():
+                print
