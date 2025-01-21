@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 import json
 import random
 
 app = Flask(__name__)
 
 
-@app.route("/")
+"""@app.route("/")
 def get_characters():
     while True:
         try:
@@ -32,13 +32,20 @@ def get_characters():
             for key, value in character.items():
                 print(f"{key.title()}: {value}")
 get_characters()
+"""
 
 
-@app.route("/get_character_by_id")
-def get_character_by_id(id):
-    id = int(input("Please put Id of Character: "))
+@app.route("/get_character_by_id", methods=["GET"])
+def get_character_by_id():
+    character_id = request.args.get("id")
     with open("data/characters.json", "r") as file:
         data = json.load(file)
         for character in data:
-            for id in character.items():
-                print
+            if str(character["id"]) == character_id:
+                return jsonify(character)
+
+    return jsonify({"error": "Character not found"}), 404
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
