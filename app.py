@@ -5,7 +5,7 @@ import random
 app = Flask(__name__)
 
 
-"""@app.route("/")
+@app.route("/home", methods=["GET"])
 def get_characters():
     while True:
         try:
@@ -32,7 +32,7 @@ def get_characters():
             for key, value in character.items():
                 print(f"{key.title()}: {value}")
 get_characters()
-"""
+
 
 
 @app.route("/get_character_by_id", methods=["GET"])
@@ -45,6 +45,10 @@ def get_character_by_id():
                 return jsonify(character)
 
     return jsonify({"error": "Character not found"}), 404
+
+
+@app.route("filter_characters", methods=["GET"])
+def filter_characters()
 
 
 if __name__ == "__main__":
