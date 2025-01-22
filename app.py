@@ -48,19 +48,22 @@ def get_character_by_id():
 
 @app.route("/filter_characters", methods=["GET"])
 def filter_characters():
-    name = request.args.get("name")
-    house = request.args.get("house")
+    filtered_character = []
+    filter_dict = request.args  # postman query parameters saved as ImmutableMultiDict.
     with open("data/characters.json", "r") as file:
         data = json.load(file)
-        for character in data:
-            if character["name"].lower() == name.lower() and character["house"].lower() == house.lower():
-                return jsonify(character)
+        for character in data:  # iterate over the List
+            match = True
+            for key, value in filter_dict.items():  # iterate over dict.
+                if key in character and str(character[key]).lower() == value.lower() and match == True:
+                    pass
+                else:
+                    match = False
+            if match == True:
+                filtered_character.append(character)
+        return jsonify(filtered_character)
 
     return jsonify({"error": "Character list not found"}), 404
-
-
-# Implement more complex filtering options, such as combining multiple filters (e.g., filter by both name and house).
-# There should be a filter option for each one of the characters’ attributes (name, house, role, age…).
 
 
 if __name__ == "__main__":
