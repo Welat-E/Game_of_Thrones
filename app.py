@@ -52,16 +52,16 @@ def filter_characters():
     filter_dict = request.args  # postman query parameters saved as ImmutableMultiDict.
     with open("data/characters.json", "r") as file:
         data = json.load(file)
-        age_more_than = request.args.get("age_more_than")
-        if age_more_than:
-            age_more_than = int(age_more_than)
         for character in data:  # iterate over the List of dict.
             match = True
             for key, value in filter_dict.items():  # iterate over dict.
                 if key in character and str(character[key]).lower() == value.lower() and match:
                     pass
-                elif key == "age_more_than" and age_more_than:
-                    if character.get("age") is None or character["age"] <= age_more_than:
+                elif key == "age_more_than" and value:
+                    if character.get("age") is None or character["age"] < int(value):
+                        match = False
+                elif key == "age_less_than" and value:
+                    if character.get("age") is None or character["age"] > int(value):
                         match = False
                 else:
                     match = False
