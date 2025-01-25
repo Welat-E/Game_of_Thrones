@@ -58,26 +58,27 @@ def filter_characters():
             match = True
             for key, value in filter_dict.items():  # iterate over dict.
                 try:
-                    if key in character and str(character[key]).lower() == value.lower() and match: #and match means if match == True
+                    if key in character and str(character[key]).lower() == value.lower() and match: #"and match" means if match == True
                         continue
-                    elif key == "age_more_than" and value:
+                    elif key == "age_more_than" and value: #and value means if something is inside
                         if character.get("age") is None or character["age"] < int(value):
                             match = False
                     elif key == "age_less_than" and value:
                         if character.get("age") is None or character["age"] > int(value):
                             match = False
-                    else:
+                    elif key != "sort_by" and value:
                         match = False
+
                 except Exception as e:
                     return jsonify((f"{e} Please use integers."))
-                    break
-
-            if sort_by:
-                if sort_by not in data:
-                    return jsonify({"error": f"Invalid field '{sort_by}' for sorting"}), 400
-                filtered_character = sorted(filtered_character, key=lambda x: x[sort_by])
             if match: #if match == true than...
                 filtered_character.append(character)
+
+        if sort_by:
+            if sort_by not in data[0]:
+                return jsonify({"error": f"Invalid field '{sort_by}' for sorting"}), 400
+            filtered_character = sorted(filtered_character, key=lambda x: x.get(sort_by))
+
         return jsonify(filtered_character)
 
     return jsonify({"error": "Character list not found"}), 404
