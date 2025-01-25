@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import json
 import random
+from operator import itemgetter
 
 app = Flask(__name__)
 
@@ -77,7 +78,7 @@ def filter_characters():
         if sort_by:
             if sort_by not in data[0]:
                 return jsonify({"error": f"Invalid field '{sort_by}' for sorting"}), 400
-            filtered_character = sorted(filtered_character, key=lambda x: x.get(sort_by))
+            filtered_character = sorted(filtered_character, key=lambda x: (x.get(sort_by) is not None, x.get(sort_by)))
 
         return jsonify(filtered_character)
 
@@ -86,3 +87,7 @@ def filter_characters():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+# supply a default value that can be compared - here "" is a good one
+print(sorted(test["test"], key=itemgetter('name') or "") )
