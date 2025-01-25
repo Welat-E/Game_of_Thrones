@@ -46,31 +46,41 @@ def get_character_by_id():
     return jsonify({"error": "Character not found"}), 404
 
 
+
 @app.route("/filter_characters", methods=["GET"])
 def filter_characters():
     filtered_character = []
     filter_dict = request.args  # postman query parameters saved as ImmutableMultiDict.
+    sort_by = request.args.get("sort_by")
     with open("data/characters.json", "r") as file:
         data = json.load(file)
         for character in data:  # iterate over the List of dict.
             match = True
             for key, value in filter_dict.items():  # iterate over dict.
-                if key in character and str(character[key]).lower() == value.lower() and match:
-                    pass
-                elif key == "age_more_than" and value:
-                    if character.get("age") is None or character["age"] < int(value):
+                try:
+                    if key in character and str(character[key]).lower() == value.lower() and match: #and match means if match == True
+                        continue
+                    elif key == "age_more_than" and value:
+                        if character.get("age") is None or character["age"] < int(value):
+                            match = False
+                    elif key == "age_less_than" and value:
+                        if character.get("age") is None or character["age"] > int(value):
+                            match = False
+                    else:
                         match = False
-                elif key == "age_less_than" and value:
-                    if character.get("age") is None or character["age"] > int(value):
-                        match = False
-                else:
-                    match = False
-            if match:
+                except Exception as e:
+                    return jsonify((f"{e} Please use integers."))
+                    break
+
+            if sort_by:
+                if sort_by not in data:
+                    return jsonify({"error": f"Invalid field '{sort_by}' for sorting"}), 400
+                filtered_character = sorted(filtered_character, key=lambda x: x[sort_by])
+            if match: #if match == true than...
                 filtered_character.append(character)
         return jsonify(filtered_character)
 
     return jsonify({"error": "Character list not found"}), 404
-
 
 
 if __name__ == "__main__":
