@@ -47,12 +47,12 @@ def get_character_by_id():
     return jsonify({"error": "Character not found"}), 404
 
 
-
 @app.route("/filter_characters", methods=["GET"])
 def filter_characters():
     filtered_character = []
     filter_dict = request.args  # postman query parameters saved as ImmutableMultiDict.
     sort_by = request.args.get("sort_by")
+    sort_by_desc = request.args.get("sort_by_desc")
     with open("data/characters.json", "r") as file:
         data = json.load(file)
         for character in data:  # iterate over the List of dict.
@@ -67,9 +67,8 @@ def filter_characters():
                     elif key == "age_less_than" and value:
                         if character.get("age") is None or character["age"] > int(value):
                             match = False
-                    elif key != "sort_by" and value:
+                    elif key != "sort_by" and key != "sort_by_desc":
                         match = False
-
                 except Exception as e:
                     return jsonify((f"{e} Please use integers."))
             if match: #if match == true than...
@@ -79,6 +78,10 @@ def filter_characters():
             if sort_by not in data[0]:
                 return jsonify({"error": f"Invalid field '{sort_by}' for sorting"}), 400
             filtered_character = sorted(filtered_character, key=lambda x: (x.get(sort_by) is not None, x.get(sort_by)))
+        if sort_by_desc:
+            if sort_by_desc not in data[0]:
+                return jsonify({"error": f"Invalid field '{sort_by_desc}' for sorting"}), 400
+            filtered_character = sorted(filtered_character, key=lambda x: (x.get(sort_by_desc) is not None, x.get(sort_by_desc)),reverse=True)
 
         return jsonify(filtered_character)
 
@@ -87,7 +90,3 @@ def filter_characters():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-# supply a default value that can be compared - here "" is a good one
-print(sorted(test["test"], key=itemgetter('name') or "") )
