@@ -69,8 +69,7 @@ def filter_characters():
                 except Exception as e:
                     return jsonify((f"{e} Please use integers."))
             if match: #if match == true than...
-                filtered_character.append(character)
-
+                filtered_character.append(character)    
         if sort_by:
             if sort_by not in data[0]:
                 return jsonify({"error": f"Invalid field '{sort_by}' for sorting"}), 400
@@ -83,6 +82,30 @@ def filter_characters():
         return jsonify(filtered_character)
 
     return jsonify({"error": "Character list not found"}), 404
+
+
+@app.route("/add_new_character", methods=["GET"])
+def add_new_character():
+    new_character = request.args  
+    with open("data/characters.json", "r") as file:
+        data = json.load(file)
+        try:
+            for key, value in new_character.items():
+                if value == "":
+                    raise Exception("You need to fill out every category.")
+            if new_character not in data: # you only need one check if new_charac in data is
+                data.append(new_character)
+            return jsonify(data)
+        except Exception as e:
+            return jsonify(f"{e}")                
+
+
+
+#Im try block versuchen wir ein code auszuführen
+#in dem fall oben wenn value leer ist gebe mir ein error
+#die Bedingung das ein Except Block ausgeführt wird, 
+# ist ein Python Error im Try Block
+#der except block wird ausgeführt wenn im try block ein python error entsteht
 
 
 if __name__ == "__main__":
