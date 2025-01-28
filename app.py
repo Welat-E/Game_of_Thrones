@@ -94,10 +94,17 @@ def add_new_character():
         with open("data/characters.json", "r") as file: #loads existing data from the json file
             data = json.load(file)
 
+        has_empty_fields = False
+
         for key, value in new_character.items():
             if key == "id" and (value == "" or value is None):
                 continue
-        if not value:  # if fields are empty
+            if key == "death" and value is None:
+                continue
+            if not value:  # if fields are empty
+                has_empty_fields = True
+                
+        if has_empty_fields:  # Check flag after loop
             return jsonify({"error": "You need to fill out every category."}), 400
 
         if new_character in data:
@@ -106,15 +113,15 @@ def add_new_character():
         new_id = data[-1]["id"] + 1 if data else 1 #creating new ID for new character
         new_character["id"] = new_id
         data.append(new_character)
-        return jsonify({"message": "Character added successfully.", "data": new_character}), 201
+        return jsonify("Character added successfully.", data), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/edit_character", methods=["POST"])
-def edit_character():
-    
+# @app.route("/edit_character", methods=["POST"])
+# def edit_character():
+
 
 
 
