@@ -32,6 +32,7 @@ def get_all_characters():
             get_characters_lst.append(character)
     return jsonify(get_characters_lst)
 
+
 @app.route("/get_character_by_id", methods=["GET"])
 def get_character_by_id():
     character_id = request.args.get("id")
@@ -84,20 +85,31 @@ def filter_characters():
     return jsonify({"error": "Character list not found"}), 404
 
 
-@app.route("/add_new_character", methods=["GET"])
+@app.route("/add_new_character", methods=["POST"])
 def add_new_character():
-    new_character = request.args  
-    with open("data/characters.json", "r") as file:
-        data = json.load(file)
-        try:
-            for key, value in new_character.items():
-                if value == "":
-                    raise Exception("You need to fill out every category.")
-            if new_character not in data: # you only need one check if new_charac in data is
-                data.append(new_character)
-            return jsonify(data)
-        except Exception as e:
-            return jsonify(f"{e}")                
+    try:
+        new_character = request.get_json() #check if json data is in Postman request
+        if not new_character:
+            return jsonify({"error": "No data provided"}), 400
+        with open("data/characters.json", "r") as file: #loads existing data from the json file
+            data = json.load(file)
+
+        for key, value in new_character.items():
+            if key == "id" and (value == "" or value is None):
+                continue
+        if not value:  # if fields are empty
+            return jsonify({"error": "You need to fill out every category."}), 400
+
+        if new_character in data:
+            return jsonify({"error": "Character already exists."}), 400
+
+        new_id = data[-1]["id"] + 1 if data else 1 #creating new ID for new character
+        new_character["id"] = new_id
+        data.append(new_character)
+        return jsonify({"message": "Character added successfully.", "data": new_character}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 
