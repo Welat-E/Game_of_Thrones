@@ -112,6 +112,11 @@ def add_new_character():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/edit_character", methods=["POST"])
+def edit_character():
+    
+
+
 
 #Im try block versuchen wir ein code auszuführen
 #in dem fall oben wenn value leer ist gebe mir ein error
