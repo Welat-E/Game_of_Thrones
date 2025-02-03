@@ -118,18 +118,28 @@ def add_new_character():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+    #In the try block we try to execute a code
+    #in the case above if value is empty give me an error
+    #the condition that an Except Block is executed, 
+    # is a Python error in the try block
+    #the except block is executed if a python error occurs in the try block
 
-# @app.route("/edit_character", methods=["POST"])
-# def edit_character():
+
+@app.route("/edit_character", methods=["POST"])
+def edit_character():
+    with open("data/characters.json", "w") as file:
+    data = json.load(file)
+    try:
+        character_id = request.args.get("id")
+        if character_id in data:
+            raise Exception("No ID contain in data."), 400
+    except Exception as e:
+        return jsonify(e)
+
+    for character["id"] in data:
+        
 
 
-
-
-#Im try block versuchen wir ein code auszuführen
-#in dem fall oben wenn value leer ist gebe mir ein error
-#die Bedingung das ein Except Block ausgeführt wird, 
-# ist ein Python Error im Try Block
-#der except block wird ausgeführt wenn im try block ein python error entsteht
 
 
 if __name__ == "__main__":
