@@ -40,8 +40,7 @@ def get_character_by_id():
         data = json.load(file)
         for character in data:
             if str(character["id"]) == character_id:
-                return jsonify(character)
-
+                return jsonify(f"{character}, {message}: If you wanna edit please go to edit_character Endpoint.")
     return jsonify({"error": "Character not found"}), 404
 
 
@@ -125,20 +124,28 @@ def add_new_character():
     #the except block is executed if a python error occurs in the try block
 
 
-@app.route("/edit_character", methods=["POST"])
+@app.route("/edit_character", methods=["PATCH"])
 def edit_character():
-    with open("data/characters.json", "w") as file:
-    data = json.load(file)
     try:
-        character_id = request.args.get("id")
-        if character_id in data:
-            raise Exception("No ID contain in data."), 400
+        character_id = int(request.args.get("id"))  #get ID from URL and convert to int
+
+        with open("data/characters.json", "r") as file:
+            data = json.load(file)  #load json file
+
+        for character in data:
+            if character["id"] == character_id:  #find character with same ID
+                character.update(request.json)  #update all field with new value
+
+                #return updated list in file
+                with open("data/characters.json", "w") as file:
+                    json.dump(data, file, indent=4)
+
+                return jsonify(character)
+
+        return jsonify({"error": "Character not found"}), 404
+
     except Exception as e:
-        return jsonify(e)
-
-    for character["id"] in data:
-        
-
+        return jsonify({"error": str(e)}), 500
 
 
 
