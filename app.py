@@ -134,7 +134,8 @@ def edit_character():
 
         for character in data:
             if character["id"] == character_id:  #find character with same ID
-                updated_character = json.dumps(request.args)
+                updated_character = dict(request.args)
+                updated_character.pop("id", None) #we remove the id from the dict, because we dont want to update the id
                 character.update(updated_character)  #update all field with new value
 
                 #return updated list in file
