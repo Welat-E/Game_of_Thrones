@@ -150,6 +150,25 @@ def edit_character():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/delete_character", methods=["DELETE"])
+def delete_character():
+    try:
+        character_id = int(request.args.get("id"))
+
+        with open("data/characters.json", "r") as file:
+            data = json.load(file)
+        # Filter out the character with the matching ID
+        updated_data = [char for char in data if char["id"] != character_id]
+
+        with open("data/characters.json", "w") as file:
+            json.dump(updated_data, file, indent=4)
+
+        return jsonify({"message": f"Character with ID {character_id} deleted successfully"})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

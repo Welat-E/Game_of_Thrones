@@ -1,17 +1,5 @@
 [
     {
-        "id": 1,
-        "name": "Test2",
-        "house": "Stark",
-        "animal": "Direwolf",
-        "symbol": "Wolf",
-        "nickname": "King in the North",
-        "role": "King",
-        "age": 25,
-        "death": null,
-        "strength": "Physically strong"
-    },
-    {
         "id": 2,
         "name": "Daenerys Targaryen",
         "house": "Targaryen",
