@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 import json
 from flask import Flask
 
-load_dotenv()#loading env file for db using
+load_dotenv()  # loading env file for db using
 
-#add the project root directory to sys.path
+# add the project root directory to sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(project_root)
@@ -19,9 +19,8 @@ from sqlalchemy.orm import Session
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Initialisiere SQLAlchemy direkt mit der App
-db = SQLAlchemy(app)
-session = Session()
+db = SQLAlchemy(app)  # initialize sqlalchemy directly with the app
+
 
 class Characters(db.Model):
     __tablename__ = "characters"
@@ -40,9 +39,11 @@ class Characters(db.Model):
 with app.app_context():
     db.create_all()
 
-def import_json_to_db(json_file):
-    with open(json_file, "r") as file:
-        data = json.load(file)  #load json file
+def import_json_to_db():
+    json_file_path = os.path.join(project_root, "data", "characters.json")
+    with open(json_file_path, "r", encoding='utf-8') as file:
+        content = file.read()
+        data = json.loads(content)  # json.loads instead of json.load for better error handling
 
     with app.app_context():
         for chars in data:
@@ -55,13 +56,11 @@ def import_json_to_db(json_file):
                 role=chars.get("role"),
                 age=chars.get("age"),
                 death=chars.get("death"),
-                strength=chars.get("strength")
+                strength=chars.get("strength"),
             )
             db.session.add(character)  # add data to session
 
-        db.session.commit() #save changes
-
-import_json_to_db("data/characters.json") #call the function
+        db.session.commit()  # save changes
 
 
-
+import_json_to_db()  # call the function
