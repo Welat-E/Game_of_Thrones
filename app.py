@@ -2,8 +2,13 @@ from flask import Flask, jsonify, request
 import json
 import random
 from operator import itemgetter
+from 
 
 app = Flask(__name__)
+
+@app.route("/login", methods=["POST"])
+def login():
+
 
 
 @app.route("/get_all_characters", methods=["GET"])
