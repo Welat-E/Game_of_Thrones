@@ -2,13 +2,18 @@ from flask import Flask, jsonify, request
 import json
 import random
 from operator import itemgetter
-from 
 
 app = Flask(__name__)
 
 @app.route("/login", methods=["POST"])
 def login():
-
+    username = request.json.get('username', '')
+    password = request.json.get('password', '')
+    user = User.query.filter_by(username=username).first()
+    if user and user.password == password:
+        access_token = create_access_token(identify=username)
+        return jsonify(access_token=access_token)
+    return jsonify({"message": "Invalid credentails"}), 401
 
 
 @app.route("/get_all_characters", methods=["GET"])
